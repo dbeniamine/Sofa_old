@@ -1,0 +1,58 @@
+# Lines that begin with '#' are comments.
+
+# Ignore foo.txt file
+#foo.txt
+
+# Ignore all html file
+#*.html
+
+# except foo.html whitch is maintain by hand
+#!foo.html
+
+# Ignore all objets and archives
+#*.[oa]
+
+
+########## GITIGNORE SOFA-DEV ##############
+# vim journal files
+.*.swp
+.*.swo
+
+# Sofa user-specific files
+share/config/sofaplugins_release.ini
+share/config/sofaplugins_debug.ini
+share/config/lastUsedGUI.ini
+share/config/Modeler.ini
+share/config/Sofa.ini
+share/config/plugins.cfg
+share/config/Ogre.log
+
+# git diff temporary files
+*.orig
+
+# Backup files
+*~
+
+# 'Compiled' Python files
+*.pyc
+
+# Misc
+doc/doxygen.git/
+share/screenshots/
+/applications/plugins/EmptyPlugin/
+/applications-dev/
+
+# Files related to cmake builds (when in-source)
+CMakeFiles/*
+CMakeCache.txt
+
+# Files related to QtCreator (shadow-build)
+CMakeLists.txt.user
+
+# anything user-specific (as opposed to repository-specific) should go
+# to .git/info/exclude instead of .gitignore. Also, .gitignore files
+# can be placed in sub-directories to avoid polluting the root one.
+
+
+.svn/
+build/

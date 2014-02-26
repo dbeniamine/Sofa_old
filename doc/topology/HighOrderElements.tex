@@ -1,0 +1,148 @@
+\documentclass[a4paper,11pt]{article}
+\input{../macros_docu} % This file is in parent directory. Your TEXINPUTS environment variable must include .. to reach this file. Example: setenv TEXINPUTS ..:../..:${TEXINPUTS}
+
+% ---- format de page A4
+	\setlength{\textwidth }{16cm}	% largeur de ligne
+	\setlength{\textheight}{23cm}   % hauteur du texte
+	\setlength{\oddsidemargin}{0cm} % marge pages impaires
+	\setlength{\evensidemargin}{0cm}% marge pages paires
+	\setlength{\topmargin}{0cm} 	
+	\setlength{\headheight}{14pt} 
+	\setlength{\headsep}{0.5cm} 
+
+
+% Title Page
+\title{High Order Elements in Sofa}
+%\author{The \sofa{} team}
+\date{2014}
+\author{Herv\'e Delingette\\ {\small INRIA M\'editerran\'ee, Sophia Antipolis, France}}
+
+
+
+
+
+\begin{document} 
+\maketitle
+\section{High Order Tetrahedral Meshes}
+
+\subsection{Introduction}
+
+We define high order tetrahedral elements in their Bernstein / Bezier form rather than Hermite form. 
+A high order tetrahedral mesh is defined by :
+
+\begin{itemize}
+	\item An underlying tetrahedral mesh $\mesh$ consisting of a set of {\em "tetrahedron vertices"} $\vertices$, edges $\edges$, triangles $\triangles$ and tetrahedra $\tetrahedra$. We write $\nvertices$, the number of "tetrahedron vertices", $\nedges$ the number of edges, $\ntriangles$ the number of triangles and $\ntetrahedra$ the number of tetrahedra. 
+	\item A set of control points $\controls$
+	\item A set of quadrivariate Bernstein polynomials  allowing to describe the value of a node anywhere on the mesh $\mesh$ 
+\end{itemize}
+%\input{sofa-graph}
+
+In terms of topology, a high order tetrahedral mesh has more control points than tetrahedron vertices.
+Below are examples of high order tetrahedral elements of various degree.
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.80\textwidth]{HighOrderTetra}
+	\caption{Linear ($\degree=1$), Quadratic ($\degree=2$) and Cubic ($\degree=3$) Tetrahedral Elements}
+	\label{fig:LinearQuadraticAndCubicTetrahedralElements}
+\end{figure}
+
+
+\subsubsection{Number of Control Points}
+
+If we write $\degree>0$ the degree (or order) of a tetrahedral element, then there are :
+
+\begin{itemize}
+	\item $\nvertices$ controls points that coincide with the {\em "tetrahedron vertices"}.
+	\item $(\degree-1) \nedges$ if $\degree>1$ control points that are lying on edges. 
+	\item $\frac{(\degree-1) (\degree-2) \ntriangles}{2}$ if $\degree>2$ control points that are lying on triangles. 
+	\item $\frac{(\degree-1) (\degree-2) (\degree-3) \ntetrahedra}{6}$ if $\degree>3$ control points that are lying on tetrahedra. 
+\end{itemize}
+
+Thus the total number of control points are :
+\[
+\ncontrols=\nvertices+(\degree-1) \nedges+\frac{(\degree-1) (\degree-2) \ntriangles}{2}+\frac{(\degree-1) (\degree-2) (\degree-3) \ntetrahedra}{6}
+\]
+\subsubsection{Tetrahedron Bezier Indices}
+
+We use specific notations of control points inside a tetrahedron which we call {\em Tetrahedron Bezier Indices} (TBI).
+A TBI $p\in \naturalSet^{+}\times\naturalSet^{+}\times\naturalSet^{+}\times\naturalSet^{+}$ is a 4-plet of positive natural numbers that indicate their relative position in the high order element. 
+
+Thus for an element of degree $\degree$, ${\mathbf p}=(i,j,k,l)$ is such that $|{\mathbf p}|=i+j+k+l=\degree$.  The four TBI $(\degree,0,0,0)$, $(0,\degree,0,0)$, $(0,0,\degree,0)$, $(0,0,0,\degree)$ coincides with the 4 tetrahedron vertices while $(0,i,0,j), i>0, j>0$ is lying on the edge linking the second and fourth vertex and   $(0,i,j,k), i>0, j>0, k>0$ is lying on the triangle opposite to the first vertex. We write $\control_{\mathbf p}$ the control point associated with indices $(i,j,k,l)$.
+
+\subsubsection{Tetravariate Bernstein Polynomial}
+
+The control points are used to define a parametric volume in space. The parameters are the barycentric coordinates $(r,s,t,u)$ such that $r+s+t+u=1$ and $0\leq r,s,t,u \leq 1$. The shape functions are the tetravariate Bernstein polynomials $B^d_{i,j,k,l}(r,s,t,u)$ of degree $d$ that are themselves parameterized by four indices $(i,j,k,l)$ such that $i+j+k+l=d$ with the following expression:
+\[
+B^\degree_{i,j,k,l}(r,s,t,u)=\frac{\degree!}{i! j! k! l!} r^i s^j t^k u ^l
+\]
+
+For given degree $d$ there are $N_d=4+6*(\degree-1)+2*(\degree-1)*(\degree-2)+(\degree-1)*(\degree-2)*(\degree-3)/6$ such polynomials. To simplify notation, we use the same Tetrahedron Bezier Indices for the Bernstein polynomial as for the control points. Therefore $B^d_{\mathbf p}(r,s,t,u)=B^d_{i,j,k,l}(r,s,t,u)$.
+
+With this notation, the position of a point parameterized by $(r,s,t,u)$ on a Bezier Tetrahedron is given by :
+\[
+\control(r,s,t,u)=\sum_{\|\mathbf p\|=\degree}  B^d_{\mathbf p}(r,s,t,u) \control_{\mathbf p}
+\]
+
+\subsection{SOFA Implementation}
+
+\subsection{Layout of Degrees of Freedom in SOFA}
+
+In SOFA, the degrees of Freedom (DOF) are stored into a set of arrays inside objects called MechanicalState.
+We have chosen to store the $\controls$ DOFs of a Bezier Tetrahedral mesh inside a single MechanicalState. Therefore a specific order of the DOFs in a MechanicalState has been defined. 
+Figure \ref{fig:LayoutBezierTetrahedron} shows this ordering of control points. First of all, the control points associated with the tetrahedron vertices are stored, then those associated with edges, triangle and tetrahedra.
+
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.80\textwidth]{DofLayoutBezierTetrahedron}
+	\caption{Layout of Degrees of Freedom of Bezier Tetrahedral meshes inside a MechanicalState object}
+	\label{fig:LayoutBezierTetrahedron}
+\end{figure}
+
+There are however some issues. In a tetrahedral mesh, edges and triangles are not oriented ({\em e.g.} a triangle is common to 2 tetrahedra and is ordered differently among each tetrahedron) and therefore the order in the DoF array may not reflect the order in each tetrahedron. It is the role of the BezierTetrahedronSetTopologyContainer class to provide a proper ordering.
+
+Second, since there are several control points for a given edge, triangle and tetrahedron, it is important to specify the ordering inside each element. Figure\ref{DofBezierTetrahedronTesselation} show in a simplified way how the control points are numbered for an edge, triangle and tetrahedron. In a nutshell, the element are stored in increasing lexicographic order of its barycentric coordinates. Thus on a quartic Tetrahedron element, the points of barycentric coordinates $(1/4, 3/4), (1/2,1/2), (3/4, 1/4)$ are stored in this order. However, this order may not the one suitable for a given Bezier tetrahedron as the edge is shared by several tetrahedra.
+
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.80\textwidth]{DofBezierTetrahedronTesselation}
+	\caption{Layout of Degrees of Freedom of Bezier Tetrahedral meshes inside a MechanicalState object}
+	\label{fig:LayoutBezierTetrahedron}
+\end{figure}
+
+\subsection{BezierTetrahedronSetTopologyContainer Class}
+
+This class provides an interface to the array of DoFs store in the MechanicalState object. More precisely, a control point can specified in 3 different ways :
+
+\begin{itemize}
+	\item A {\em global index} which is its rank in the array of size $\ncontrols$.
+	\item A tetrahedron index and a Tetrahedron Bezier Index (like $(2,0,2,0)$ on a tetrahedron of order 4).
+	\item A tetrahedron index and its {\em local index}. The local index is an integer between 0 and $N_\degree$ which give the rank of the control points in this local (tetrahedron specific) list of control points.
+\end{itemize}
+
+The class thus provides function to move from one representation of a control point to another.
+
+The function {\it void getGlobalIndexArrayOfBezierPointsInTetrahedron(const size\_t tetrahedronIndex, VecPointID \& indexArray) } is particularly useful as it outputs an array of $N_\degree$ global indices of the control points located inside a given tetrahedron. The tetrahedron Bezier indices of those control points are always the same for a given degree $\degree$ and is given by the array returned by the function {\it sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArray() const;}.
+
+Obviously the class can return the degree of  Bezier tetrahedra (they are all of the same degree). Note that it provides both the total number $\ncontrols$ of control points $getNbPoint()$ and the number $V$ of tetrahedral points.
+
+
+
+\subsection{BezierTetrahedronSetGeometryAlgorithms Class}
+
+This class provides basic geometric functions :
+
+\begin{itemize}
+	\item {\it Coord computeNodalValue(const size\_t tetrahedronIndex,const Vec4 barycentricCoordinate); } which computes the position / value of a node given the index of a tetrahedron and its barycentric coordinate.
+	\item {\it Real computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate);} which computes $B^d_{\mathbf p}(r,s,t,u)$.
+\end{itemize}
+
+To optimize things it precomputes the Bernstein coefficients of a given degree. If {\it drawControlPointsEdges} is set to true then it draws the edges of the control point net.  
+
+\subsection{Mesh2BezierTopologicalMapping Class}
+
+This class provide a way to create a Bezier tetrahedral mesh of any order given a tetrahedral mesh. The control points are simply linearly interpolated from the tetrahedral vertices : a control point of index ${\mathbf p}=(i,j,k,l)$ is computed with the barycentric coordinates $(\frac{i}{\degree},\frac{j}{\degree},\frac{k}{\degree},\frac{l}{\degree})$. The mapping automatically sets the degree and the number of tetrahedral vertices in the object BezierTetrahedronSetTopologyContainer.
+
+Note that the position of the mapping in the scene has be after BezierTetrahedronSetTopologyContainer (see the example in BezierTetrahedronTopologicalMapping.scn) 
+
+\end{document}          
+

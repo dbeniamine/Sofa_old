@@ -1,0 +1,107 @@
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
+
+## plugin external dependencies
+if (APPLE)
+    # on MacOS you must use macport to use python SDK
+    # standard FindPythonLibs script mess with macports and apple version
+    set(PYTHON_LIBRARIES "-F/opt/local/Library/Frameworks/ -framework Python")
+    set(PYTHON_INCLUDE_DIRS "/opt/local/Library/Frameworks/Python.framework/Headers")	 
+    # fixes compilation on 10.9, where python 2.7 is a system
+    # framework
+    set(PYTHON_LIBRARIES "-F/System/Library/Frameworks/ -framework Python")
+    set(PYTHON_INCLUDE_DIRS "/System/Library/Frameworks/Python.framework/Headers")
+
+else()
+    find_package(PythonLibs 2.7 REQUIRED)
+endif()
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+set(HEADER_FILES
+
+    initSofaPython.h
+    ScriptController.h
+    PythonScriptController.h
+    PythonMacros.h
+    PythonEnvironment.h
+    Binding.h
+    Binding_Base.h
+    Binding_SofaModule.h
+    Binding_Node.h
+    Binding_Context.h
+    Binding_BaseContext.h
+    Binding_Data.h
+    Binding_BaseObject.h
+    Binding_BaseState.h
+    PythonVisitor.h
+    Binding_DisplayFlagsData.h
+    ScriptEvent.h
+    PythonScriptEvent.h
+    Binding_BaseLoader.h
+    Binding_MeshLoader.h
+    Binding_Vector.h
+    Binding_Topology.h
+    Binding_BaseMeshTopology.h
+    Binding_MeshTopology.h
+    Binding_GridTopology.h
+    Binding_RegularGridTopology.h
+    Binding_BaseMapping.h 
+    Binding_MultiMapping.h 
+    Binding_SubsetMultiMapping.h 
+    Binding_Mapping.h 
+    Binding_RigidMapping.h 
+    Binding_MechanicalObject.h
+    Binding_BaseMechanicalState.h
+    Binding_PythonScriptController.h
+    Binding_LinearSpring.h
+    SceneLoaderPY.h
+    ScriptEnvironment.h
+	)
+
+set(SOURCE_FILES
+
+    initSofaPython.cpp
+    ScriptController.cpp
+    PythonScriptController.cpp
+    PythonEnvironment.cpp
+    Binding.cpp
+    Binding_SofaModule.cpp
+    Binding_Base.cpp
+    Binding_Context.cpp
+    Binding_BaseContext.cpp
+    Binding_Node.cpp
+    Binding_Data.cpp
+    Binding_BaseObject.cpp
+    Binding_BaseState.cpp
+    PythonMacros.cpp
+    PythonVisitor.cpp
+    Binding_DisplayFlagsData.cpp
+    ScriptEvent.cpp
+    PythonScriptEvent.cpp
+    Binding_BaseLoader.cpp
+    Binding_MeshLoader.cpp
+    Binding_Vector.cpp
+    Binding_Topology.cpp
+    Binding_BaseMeshTopology.cpp
+    Binding_MeshTopology.cpp
+    Binding_GridTopology.cpp
+    Binding_RegularGridTopology.cpp
+    Binding_BaseMapping.cpp 
+    Binding_MultiMapping.cpp 
+    Binding_Mapping.cpp 
+    Binding_RigidMapping.cpp 
+    Binding_SubsetMultiMapping.cpp 
+    Binding_MechanicalObject.cpp
+    Binding_BaseMechanicalState.cpp
+    Binding_PythonScriptController.cpp
+    Binding_LinearSpring.cpp
+    SceneLoaderPY.cpp
+    ScriptEnvironment.cpp
+	)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+AddCompilerDefinitions("SOFA_BUILD_SOFAPYTHON")
+AddLinkerDependencies(SofaCore SofaSimulationCommon SofaGuiCommon ${PYTHON_LIBRARIES})
+
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
+
