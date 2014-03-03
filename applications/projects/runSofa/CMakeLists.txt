@@ -24,6 +24,11 @@ if(SOFA-LIB_SIMULATION_GRAPH_DAG)
     AddLinkerDependencies(SofaSimulationGraph)
     AddCompilerDefinitions("SOFA_HAVE_DAG" )
 endif()
+if(SOFA-MISC_USE_LIKWID)
+    AddLinkerDependencies(likwid)
+    AddLinkerDependencies(pthread)
+    AddLinkerDependencies(m)
+endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

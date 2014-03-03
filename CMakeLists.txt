@@ -33,3 +33,4 @@ else()
     sofa_save_complete_dependencies("misc/full-dependencies.txt")
     sofa_print_configuration_report()
 endif()
+

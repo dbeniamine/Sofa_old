@@ -42,7 +42,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/component/misc/WriteState.h>
 
-
+#include <likwid.h>
 
 using std::cerr;
 using std::endl;
@@ -75,7 +75,7 @@ void apply(std::string &input, unsigned int nbsteps, std::string &output)
 
 
     // --- Init output file ---
-    std::string outputdir =  sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string("/applications/projects/sofaBatch/simulation/");
+    std::string outputdir =  sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string("/../Sofa/applications/projects/sofaBatch/simulation/");
     std::string mstate = outputdir + sofa::helper::system::SetDirectory::GetFileName(output.c_str());
 
     // --- Init Write state visitor ---
@@ -172,12 +172,14 @@ int main(int argc, char** argv)
     int nbsteps;
     std::string output;
 
+    LIKWID_MARKER_INIT;
     while( end >> input && end >>nbsteps && end >> output  )
     {
         sofa::helper::system::DataRepository.findFile(input);
         apply(input, nbsteps, output);
     }
     end.close();
+    LIKWID_MARKER_CLOSE;
 
     return 0;
 }

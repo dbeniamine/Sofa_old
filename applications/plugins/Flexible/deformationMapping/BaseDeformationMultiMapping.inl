@@ -437,6 +437,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2)
 {
+    LIKWID_MARKER_START(("BaseDeformationMultiMapping apply"));
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -473,6 +474,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     };
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
+    LIKWID_MARKER_STOP("BaseDeformationMultiMapping apply");
 }
 
 
@@ -480,6 +482,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv1>& dIn1, const Data<InVecDeriv2>& dIn2)
 {
+    LIKWID_MARKER_START(("BaseDeformationMultiMapping applyJ"));
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJ"<<std::endl;
 
     if(this->assemble.getValue())
@@ -560,11 +563,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
         dOut.endEdit();
     }
+    LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJ");
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv1>& dIn1, Data<InVecDeriv2>& dIn2, const Data<OutVecDeriv>& dOut)
 {
+    LIKWID_MARKER_START(("BaseDeformationMultiMapping applyJT"));
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJT"<<std::endl;
 
     if(this->assemble.getValue())  { eigenJacobian1.addMultTranspose(dIn1,dOut); eigenJacobian2.addMultTranspose(dIn2,dOut); }
@@ -637,6 +642,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         dIn1.endEdit();
         dIn2.endEdit();
     }
+    LIKWID_MARKER_STOP("BaseDeformationMultiMapping apply");
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -646,6 +652,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
     if(BlockType1::constant && BlockType2::constant) return;
 
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyDJT"<<std::endl;
+    LIKWID_MARKER_START(("BaseDeformationMultiMapping applyDJT"));
 
     const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
@@ -734,6 +741,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
             }
         }
     }
+    LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyDJT");
 }
 
 
@@ -742,6 +750,7 @@ template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv1>& _out1, Data<InMatrixDeriv2>& _out2, const Data<OutMatrixDeriv>& _in )
 {
     // TODO handle mask
+    LIKWID_MARKER_START(("BaseDeformationMultiMapping applyJT"));
 
     InMatrixDeriv1& out1 = *_out1.beginEdit();
     InMatrixDeriv2& out2 = *_out2.beginEdit();
@@ -793,6 +802,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
     _out1.endEdit();
     _out2.endEdit();
+    LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJT");
 }
 
 

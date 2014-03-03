@@ -177,6 +177,12 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
     list(APPEND compilerDefines SOFA_DUMP_VISITOR_INFO)
 endif()
 
+## Use Likwid library for perfomance monitoring
+sofa_option(SOFA-MISC_USE_LIKWID BOOL OFF "use likwid perfomance monitor")
+if(SOFA-MISC_USE_LIKWID)
+    list(APPEND compilerDefines LIKWID_PERFMON)
+endif()
+
 
 ## tutorial
 if(PS3)

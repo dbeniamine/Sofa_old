@@ -206,4 +206,3 @@ endif()
 AddSourceDependencies(eigen) 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
-

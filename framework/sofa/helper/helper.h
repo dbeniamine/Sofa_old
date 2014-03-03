@@ -25,6 +25,9 @@
 #ifndef SOFA_HELPER_H
 #define SOFA_HELPER_H
 
+
+#include <likwid.h>
+
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_HELPER

@@ -48,6 +48,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
+
+
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif /* SOFA_SMP */
@@ -111,6 +113,17 @@ int main(int argc, char** argv)
     }
 #endif
 
+    //Initialisation of likwid threads
+    LIKWID_MARKER_INIT;
+#ifdef LIKWID_PERFMON
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel
+{
+    printf("likwid init thread %d\n", likwid_getProcessorId());
+    LIKWID_MARKER_THREADINIT;
+}
+#endif
+#endif
     sofa::gui::initMain();
 
     std::string fileName ;
@@ -279,7 +292,6 @@ int main(int argc, char** argv)
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
     if (groot!=NULL)
@@ -287,6 +299,7 @@ int main(int argc, char** argv)
 
 
     sofa::gui::GUIManager::closeGUI();
+    LIKWID_MARKER_CLOSE;
 
     return 0;
 }

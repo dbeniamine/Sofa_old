@@ -186,6 +186,4 @@ if(UNIX)
     link_directories("/usr/lib/x86_64-linux-gnu/")
     AddLinkerDependencies("pthread")
 endif()
-
-
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

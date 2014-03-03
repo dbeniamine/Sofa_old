@@ -40,6 +40,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
+
 namespace sofa
 {
 
@@ -389,6 +390,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& chil
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
+    LIKWID_MARKER_START("BaseDeformationMapping apply");
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -414,6 +416,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     if(this->assemble.getValue() && ( !BlockType::constant ) )  Jdirty = true; // J needs to be updated later where the dof mask can be activated
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
+    LIKWID_MARKER_STOP("BaseDeformationMapping apply");
 }
 
 
@@ -421,6 +424,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
+    LIKWID_MARKER_START("BaseDeformationMapping applyJ");
     if(this->assemble.getValue())
     {
         if( Jdirty )
@@ -478,11 +482,13 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 
         dOut.endEdit();
     }
+    LIKWID_MARKER_STOP("BaseDeformationMapping applyJ");
 }
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
+    LIKWID_MARKER_START("BaseDeformationMapping applyJT");
     if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
     else
     {
@@ -527,13 +533,16 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 
         dIn.endEdit();
     }
+    LIKWID_MARKER_STOP("BaseDeformationMapping applyJT");
 }
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
+
     if(BlockType::constant) return;
 
+    LIKWID_MARKER_START("BaseDeformationMapping applyDJT");
     Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
     const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
     const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
@@ -578,6 +587,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
             }
         }
     }
+    LIKWID_MARKER_STOP("BaseDeformationMapping applyDJT");
 }
 
 
@@ -586,7 +596,7 @@ template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& _out, const Data<OutMatrixDeriv>& _in )
 {
     // TODO handle mask
-
+    LIKWID_MARKER_START("BaseDeformationMapping applyJT");
     InMatrixDeriv& out = *_out.beginEdit();
     const OutMatrixDeriv& in = _in.getValue();
 
@@ -619,6 +629,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT( const core::Constraint
     }
 
     _out.endEdit();
+    LIKWID_MARKER_STOP("BaseDeformationMapping applyJT");
 }
 
 
