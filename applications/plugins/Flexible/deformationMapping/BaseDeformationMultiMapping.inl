@@ -551,11 +551,11 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                     jacobian2[i][j].addmult(out[i],in2[index]);
                 }
             }
-        }
         LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJ");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
+        }
         else
         {
             LIKWID_MARKER_START("BaseDeformationMultiMapping applyJ seq");
