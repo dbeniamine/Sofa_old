@@ -158,7 +158,6 @@ public:
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
-        LIKWID_MARKER_START("BaseStrainMapping apply");
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
         helper::ReadAccessor<Data<InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -169,22 +168,29 @@ public:
         const InVecCoord&  in = dIn.getValue();
 
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+        #pragma omp parallel
+{
+#endif
+        LIKWID_MARKER_START("BaseStrainMapping apply");
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp for
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
         {
             out[i]=OutCoord();
             jacobian[i].addapply(out[i],in[i]);
         }
+        LIKWID_MARKER_STOP("BaseStrainMapping apply");
+#ifdef USING_OMP_PRAGMAS
+}
+#endif
         dOut.endEdit();
 
         if(!BlockType::constant) if(this->assemble.getValue()) updateJ();
-        LIKWID_MARKER_STOP("BaseStrainMapping apply");
     }
 
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
-        LIKWID_MARKER_START("BaseStrainMapping applyJ");
         if(this->assemble.getValue())  eigenJacobian.mult(dOut,dIn);
         else
         {
@@ -192,22 +198,29 @@ public:
             const InVecDeriv&  in = dIn.getValue();
 
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+        #pragma omp parallel
+{
+#endif
+           LIKWID_MARKER_START("BaseStrainMapping applyJ");
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 out[i]=OutDeriv();
                 jacobian[i].addmult(out[i],in[i]);
             }
+            LIKWID_MARKER_STOP("BaseStrainMapping applyJ");
+#ifdef USING_OMP_PRAGMAS
+}
+#endif
             dOut.endEdit();
         }
-        LIKWID_MARKER_STOP("BaseStrainMapping applyJ");
     }
 
 
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
     {
-        LIKWID_MARKER_START("BaseStrainMapping applyJT");
         if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
         else
         {
@@ -215,16 +228,24 @@ public:
             const OutVecDeriv&  out = dOut.getValue();
 
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+        #pragma omp parallel
+{
+#endif
+            LIKWID_MARKER_START("BaseStrainMapping applyJT");
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 jacobian[i].addMultTranspose(in[i],out[i]);
             }
+            LIKWID_MARKER_STOP("BaseStrainMapping applyJT");
+#ifdef USING_OMP_PRAGMAS
+}
+#endif
 
             dIn.endEdit();
         }
-        LIKWID_MARKER_STOP("BaseStrainMapping applyJT");
     }
 
     virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv>& /*out*/, const Data<OutMatrixDeriv>& /*in*/)
@@ -235,7 +256,6 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
     {
-        LIKWID_MARKER_START("BaseStrainMapping applyDJT");
         if(BlockType::constant) return;
 
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
@@ -256,15 +276,23 @@ public:
         else
         {
 #ifdef USING_OMP_PRAGMAS
-			#pragma omp parallel for
+            #pragma omp parallel
+{
+#endif
+            LIKWID_MARKER_START("BaseStrainMapping applyDJT");
+#ifdef USING_OMP_PRAGMAS
+        #pragma omp for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
             }
+            LIKWID_MARKER_STOP("BaseStrainMapping applyDJT");
+#ifdef USING_OMP_PRAGMAS
+}
+#endif
         }
 //        cerr<<"BaseStrainMapping::applyDJT, parentForce after = " << parentForce << endl;
-        LIKWID_MARKER_STOP("BaseStrainMapping applyDJT");
     }
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
