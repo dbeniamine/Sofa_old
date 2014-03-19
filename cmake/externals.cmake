@@ -158,6 +158,15 @@ else()
 endif()
 RegisterProjects(${ZLIB_LIBRARIES} OPTION SOFA-EXTERNAL_ZLIB COMPILE_DEFINITIONS SOFA_HAVE_ZLIB)
 
+# Enable performance monitoring with likwid
+set(LIKWID_LIBRARIES "${SOFA-EXTERNAL_LIKWID_PATH}/liblikwid.so")
+set(LIKWID_LIBRARIES ${LIKWID_LIBRARIES} CACHE INTERNAL "likwid Library")
+RegisterProjects(${LIKWID_LIBRARIES} OPTION SOFA-MISC_USE_LIKWID COMPILE_DEFINITIONS LIKWID_PERFMON)
+if(SOFA-MISC_USE_LIKWID)
+    AddLinkerDependencies(pthread)
+    AddLinkerDependencies(m)
+endif()
+
 
 
 # enable unit tests

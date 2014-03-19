@@ -179,19 +179,11 @@ endif()
 
 ## Use Likwid library for perfomance monitoring
 sofa_option(SOFA-MISC_USE_LIKWID BOOL OFF "use likwid perfomance monitor")
-sofa_option(SOFA-MISC_USE_LIKWID_LOCAL BOOL OFF "use likwid by function")
-sofa_option(SOFA-MISC_USE_LIKWID_GLOBAL BOOL OFF "use likwid on the whole simulation")
+sofa_option(SOFA-EXTERNAL_LIKWID_PATH PATH "${SOFA_LIB_OS_DIR}" "Path to likwid library")
 if(SOFA-MISC_USE_LIKWID)
     list(APPEND compilerDefines LIKWID_PERFMON)
 endif()
 
-if(SOFA-MISC_USE_LIKWID_LOCAL)
-    list(APPEND compilerDefines LOCAL_LIKWID_PERFMON)
-endif()
-
-if(SOFA-MISC_USE_LIKWID_GLOBAL)
-    list(APPEND compilerDefines GLOBAL_LIKWID_PERFMON)
-endif()
 ## tutorial
 if(PS3)
     sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build Chain hybrid tutorial")
