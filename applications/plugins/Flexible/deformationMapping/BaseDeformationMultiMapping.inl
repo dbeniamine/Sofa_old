@@ -450,7 +450,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 #pragma omp parallel
 {
 #endif
-    LIKWID_MARKER_START("BaseDeformationMultiMapping apply");
+    LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping apply");
 #ifdef USING_OMP_PRAGMAS
 #pragma omp for
 #endif
@@ -468,7 +468,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
             jacobian2[i][j].addapply(out[i],in2[index]);
         }
     }
-    LIKWID_MARKER_STOP("BaseDeformationMultiMapping apply");
+    LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping apply");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
@@ -533,7 +533,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #pragma omp parallel
 {
 #endif
-        LIKWID_MARKER_START("BaseDeformationMultiMapping applyJ");
+        LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyJ");
 #ifdef USING_OMP_PRAGMAS
 #pragma omp for
 #endif
@@ -551,14 +551,14 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                     jacobian2[i][j].addmult(out[i],in2[index]);
                 }
             }
-        LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJ");
+        LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyJ");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
         }
         else
         {
-            LIKWID_MARKER_START("BaseDeformationMultiMapping applyJ seq");
+            LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyJ seq");
             typedef helper::ParticleMask ParticleMask;
             const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
             for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
@@ -576,7 +576,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                     jacobian2[i][j].addmult(out[i],in2[index]);
                 }
             }
-            LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJ seq");
+            LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyJ seq");
         }
 
         dOut.endEdit();
@@ -613,7 +613,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #pragma omp parallel
 {
 #endif
-            LIKWID_MARKER_START("BaseDeformationMultiMapping applyJT vec");
+            LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyJT vec");
 #ifdef USING_OMP_PRAGMAS
     #pragma omp for
 #endif
@@ -637,7 +637,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                     jacobian2[indexc][this->f_index_parentToChild2[i][j+1]].addMultTranspose(in2[i],out[indexc]);
                 }
             }
-            LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJT vec");
+            LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyJT vec");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
@@ -645,7 +645,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         }
         else
         {
-            LIKWID_MARKER_START("BaseDeformationMultiMapping applyJT vec else");
+            LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyJT vec else");
             typedef helper::ParticleMask ParticleMask;
             const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
             for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
@@ -662,7 +662,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                     jacobian2[i][j].addMultTranspose(in2[index],out[i]);
                 }
             }
-            LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJT vec else");
+            LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyJT vec else");
         }
 
         dIn1.endEdit();
@@ -716,7 +716,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 #pragma omp parallel
 {
 #endif
-                LIKWID_MARKER_START("BaseDeformationMultiMapping applyDJT");
+                LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyDJT");
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
@@ -743,14 +743,14 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
                     }
                 }
             }
-            LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyDJT");
+            LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyDJT");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
         }
         else
         {
-            LIKWID_MARKER_START("BaseDeformationMultiMapping applyDJT else");
+            LIKWID_LOCAL_MARKER_START("BaseDeformationMultiMapping applyDJT else");
             typedef helper::ParticleMask ParticleMask;
             const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
             for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
@@ -773,7 +773,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
                     }
                 }
             }
-            LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyDJT else");
+            LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyDJT else");
         }
     }
 }
@@ -784,7 +784,7 @@ template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJT( const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv1>& _out1, Data<InMatrixDeriv2>& _out2, const Data<OutMatrixDeriv>& _in )
 {
     // TODO handle mask
-    LIKWID_MARKER_START(("BaseDeformationMultiMapping applyJT Mat seq"));
+    LIKWID_LOCAL_MARKER_START(("BaseDeformationMultiMapping applyJT Mat seq"));
 
     InMatrixDeriv1& out1 = *_out1.beginEdit();
     InMatrixDeriv2& out2 = *_out2.beginEdit();
@@ -836,7 +836,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
     _out1.endEdit();
     _out2.endEdit();
-    LIKWID_MARKER_STOP("BaseDeformationMultiMapping applyJT Mat seq");
+    LIKWID_LOCAL_MARKER_STOP("BaseDeformationMultiMapping applyJT Mat seq");
 }
 
 

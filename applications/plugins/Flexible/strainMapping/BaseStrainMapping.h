@@ -171,7 +171,7 @@ public:
         #pragma omp parallel
 {
 #endif
-        LIKWID_MARKER_START("BaseStrainMapping apply");
+        LIKWID_LOCAL_MARKER_START("BaseStrainMapping apply");
 #ifdef USING_OMP_PRAGMAS
         #pragma omp for
 #endif
@@ -180,7 +180,7 @@ public:
             out[i]=OutCoord();
             jacobian[i].addapply(out[i],in[i]);
         }
-        LIKWID_MARKER_STOP("BaseStrainMapping apply");
+        LIKWID_LOCAL_MARKER_STOP("BaseStrainMapping apply");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
@@ -201,7 +201,7 @@ public:
         #pragma omp parallel
 {
 #endif
-           LIKWID_MARKER_START("BaseStrainMapping applyJ");
+           LIKWID_LOCAL_MARKER_START("BaseStrainMapping applyJ");
 #ifdef USING_OMP_PRAGMAS
         #pragma omp for
 #endif
@@ -210,7 +210,7 @@ public:
                 out[i]=OutDeriv();
                 jacobian[i].addmult(out[i],in[i]);
             }
-            LIKWID_MARKER_STOP("BaseStrainMapping applyJ");
+            LIKWID_LOCAL_MARKER_STOP("BaseStrainMapping applyJ");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
@@ -231,7 +231,7 @@ public:
         #pragma omp parallel
 {
 #endif
-            LIKWID_MARKER_START("BaseStrainMapping applyJT");
+            LIKWID_LOCAL_MARKER_START("BaseStrainMapping applyJT");
 #ifdef USING_OMP_PRAGMAS
         #pragma omp for
 #endif
@@ -239,7 +239,7 @@ public:
             {
                 jacobian[i].addMultTranspose(in[i],out[i]);
             }
-            LIKWID_MARKER_STOP("BaseStrainMapping applyJT");
+            LIKWID_LOCAL_MARKER_STOP("BaseStrainMapping applyJT");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
@@ -279,7 +279,7 @@ public:
             #pragma omp parallel
 {
 #endif
-            LIKWID_MARKER_START("BaseStrainMapping applyDJT");
+            LIKWID_LOCAL_MARKER_START("BaseStrainMapping applyDJT");
 #ifdef USING_OMP_PRAGMAS
         #pragma omp for
 #endif
@@ -287,7 +287,7 @@ public:
             {
                 jacobian[i].addDForce( parentForce[i], parentDisplacement[i], childForce[i], mparams->kFactor() );
             }
-            LIKWID_MARKER_STOP("BaseStrainMapping applyDJT");
+            LIKWID_LOCAL_MARKER_STOP("BaseStrainMapping applyDJT");
 #ifdef USING_OMP_PRAGMAS
 }
 #endif
