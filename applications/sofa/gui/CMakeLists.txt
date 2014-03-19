@@ -7,3 +7,9 @@ RegisterProjects("SofaGuiQt" OPTION "SOFA-LIB_GUI_QT" COMPILE_DEFINITIONS "SOFA_
 RegisterProjects("SofaGuiQTViewer" OPTION "SOFA-LIB_GUI_QTVIEWER" COMPILE_DEFINITIONS "SOFA_GUI_QTVIEWER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/qt/viewer/qt")
 RegisterProjects("SofaGuiQTQGLViewer" OPTION "SOFA-LIB_GUI_QGLVIEWER" COMPILE_DEFINITIONS "SOFA_GUI_QGLVIEWER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/qt/viewer/qgl")
 RegisterProjects("SofaGuiGlut" OPTION "SOFA-LIB_GUI_GLUT" COMPILE_DEFINITIONS "SOFA_GUI_GLUT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/glut")
+
+if(SOFA-MISC_USE_LIKWID)
+    AddLinkerDependencies(likwid)
+    AddLinkerDependencies(pthread)
+    AddLinkerDependencies(m)
+endif()
