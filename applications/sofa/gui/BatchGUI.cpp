@@ -67,7 +67,7 @@ int BatchGUI::mainLoop()
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
         sofa::simulation::getSimulation()->updateVisual(groot.get());
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
-        LIKWID_GLOBAL_MARKER_START("Full")
+        LIKWID_GLOBAL_MARKER_START("Full");
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
@@ -80,7 +80,7 @@ int BatchGUI::mainLoop()
         }
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
-        LIKWID_GLOBAL_MARKER_STOP("Full")
+        LIKWID_GLOBAL_MARKER_STOP("Full");
 
         std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
         std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
