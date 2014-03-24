@@ -184,6 +184,13 @@ if(SOFA-MISC_USE_LIKWID)
     list(APPEND compilerDefines LIKWID_PERFMON)
 endif()
 
+#Performance analyse with heapinfo
+sofa_option(SOFA-MISC_USE_VALGRIND BOOL OFF "use valgrind tool heapinfo tool")
+if(SOFA-MISC_USE_VALGRIND)
+    list(APPEND compilerDefines SOFA_USE_VALGRIND)
+endif()
+
+>>>>>>> ADD: [wip] trapdoor for heapinfo and fix for likwid openmp global perfctr
 ## tutorial
 if(PS3)
     sofa_option(SOFA-TUTORIAL_CHAIN_HYBRID BOOL OFF "Build Chain hybrid tutorial")
