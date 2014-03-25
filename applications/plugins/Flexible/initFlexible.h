@@ -33,14 +33,6 @@
 #define SOFA_Flexible_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef LOCAL_LIKWID_PERFMON
-#define LIKWID_LOCAL_MARKER_START(A) LIKWID_MARKER_START(A)
-#define LIKWID_LOCAL_MARKER_STOP(A) LIKWID_MARKER_STOP(A)
-#else
-#define LIKWID_LOCAL_MARKER_START(A) 
-#define LIKWID_LOCAL_MARKER_STOP(A) 
-#endif
-
 /** \mainpage
   The Flexible plugin provides a unified approach to the simulation of deformable solids. It uses a three-level kinematic structure:
   control nodes, deformation gradients,  strain measures, and new mappings between these. 
