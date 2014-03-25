@@ -65,7 +65,7 @@ int BatchGUI::mainLoop()
         sofa::simulation::getSimulation()->updateVisual(groot.get());
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
 
-LIKWID_MARKER_START("Full");
+LIKWID_MARKER_START("Simu");
 #ifdef SOFA_USE_VALGRIND
         VALGRIND_START_ANALYSE;
 #endif
@@ -81,7 +81,7 @@ LIKWID_MARKER_START("Full");
         }
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
-LIKWID_MARKER_STOP("Full");
+LIKWID_MARKER_STOP("Simu");
 #ifdef SOFA_USE_VALGRIND
         VALGRIND_STOP_ANALYSE;
 #endif
