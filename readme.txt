@@ -27,5 +27,8 @@ an efficient prototyping tool. SOFA's advanced software architecture allows:
 
 INSTALLATION
 
-For up-to-date instructions, please refer to the SOFA Wiki:
-  http://wiki.sofa-framework.org/wiki/Main_Page
+THIS IS AN OLD, UNOFFICIAL, MODIFIED VERSION OF SOFA
+It is distributed for experimental reproducibility ONLY.
+For any other purpose, please checkout the latest version from the officiel site:
+    https://www.sofa-framework.org/community/doc/introduction/
+
